@@ -27,4 +27,8 @@ contract Transaction {
         cashNum=_cashNum;
         timestamp=block.timestamp;
     }
+
+    function getTransactionID() public view returns(uint) {
+        return id;
+    }
 }

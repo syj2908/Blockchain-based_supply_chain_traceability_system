@@ -3,16 +3,21 @@ pragma solidity ^0.8.7;
 import "./Lender.sol";
 import "./Borrower.sol";
 import "./Manager.sol";
-import "./SysFunc.sol";
+import "./CashFlow.sol";
+import "./Transaction.sol";
 
 contract LoanSystem {
     //借贷系统
 
     Lender[] public lenders;
-    // Borrower[] public borrowers;
-    // Manager[] public managers;
+    Borrower[] public borrowers;
+    Manager[] public managers;
+    CashFlow[] public cashFlows;
+    Transaction[] public transactions;
 
     uint256[] IDarr = [0, 0, 0]; //用户id计数器
+    uint256 cashFlowCount = 0; //资金流ID计数器
+    uint256 TransactionCount = 0; //交易ID计数器
 
     function createLender(
         string memory account,
@@ -22,8 +27,8 @@ contract LoanSystem {
         //创建一个放贷者并返回用户ID
         string memory id;
         id = generateID(0);
-        Lender tmp = new Lender(id, account, passwd, name);
-        lenders.push(tmp);
+        Lender lender = new Lender(id, account, passwd, name);
+        lenders.push(lender);
         return id;
     }
 
@@ -66,8 +71,39 @@ contract LoanSystem {
 
     function getAllLenderInfo() public view returns (Lender[] memory) {
         //返回所有放贷者信息
+        //功能未实现 待补充
         return lenders;
     }
+
+    function createCashFlow(
+        string memory lenderID,
+        string memory borrowerID,
+        uint256 cashNum
+    ) public returns (bool) {
+        //发起一条资金流
+        CashFlow cashflow = new CashFlow(cashFlowCount, cashNum);
+        cashFlows.push(cashflow);
+        for (uint256 i = 0; i < lenders.length; i++) {
+            if (
+                keccak256(bytes(lenders[i].getLenderID())) ==
+                keccak256(bytes(lenderID)) &&
+                lenders[i].valid()
+            ) lenders[i].attachCashFlow(cashflow.id());
+        }
+        //涉及借贷者部分 待补充
+        //
+        // for (uint256 i = 0; i < borrowers.length; i++) {
+        //     if (
+        //         keccak256(bytes(borrowers[i].getBorrowerID())) ==
+        //         keccak256(bytes(borrowerID)) &&
+        //         borrowers[i].isValid()
+        //     ) borrowers[i].attachCashFlow(cashFlowCount);
+        // }
+        cashFlowCount++;
+        return true;
+    }
+
+    //业务无关函数
 
     function strConcat(string memory _a, string memory _b)
         public

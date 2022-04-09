@@ -4,7 +4,8 @@ contract Lender {
     string account;
     string passwd;
     string name;
-    bool valid;
+    bool public valid;
+    uint256[] cashFlows;
 
     constructor(
         string memory _id,
@@ -43,5 +44,10 @@ contract Lender {
 
     function isValid() public view returns (bool) {
         return valid;
+    }
+
+    function attachCashFlow(uint256 cashFlowID) public returns (bool) {
+        cashFlows.push(cashFlowID);
+        return true;
     }
 }
