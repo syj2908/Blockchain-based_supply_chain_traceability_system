@@ -1,6 +1,6 @@
 contract Lender {
     //放贷者结构体
-    string id;
+    string public id;
     string account;
     string passwd;
     string name;
@@ -20,30 +20,23 @@ contract Lender {
         valid = true;
     }
 
-    function getLenderID() public view returns (string memory) {
-        return id;
-    }
-
     function getLenderInfo()
         public
         view
         returns (
             string memory,
             string memory,
-            string memory
+            string memory,
+            uint256[] memory
         )
     {
-        return (id, account, name);
+        return (id, account, name, cashFlows);
     }
 
     function deleteLender() public returns (bool) {
         valid = false;
         if (valid == false) return true;
         else return false;
-    }
-
-    function isValid() public view returns (bool) {
-        return valid;
     }
 
     function attachCashFlow(uint256 cashFlowID) public returns (bool) {

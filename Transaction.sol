@@ -1,6 +1,6 @@
 contract Transaction {
     //交易数据结构
-    uint256 id;
+    uint256 public id;
     uint256 cashFlowID;
     string senderID;
     string receiverID;
@@ -28,7 +28,27 @@ contract Transaction {
         timestamp = block.timestamp;
     }
 
-    function getTransactionID() public view returns (uint256) {
-        return id;
+    function checkTransaction()
+        public
+        view
+        returns (
+            uint256,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return (
+            cashFlowID,
+            senderID,
+            receiverID,
+            beforeTrans,
+            afterTrans,
+            cashNum,
+            timestamp
+        );
     }
 }

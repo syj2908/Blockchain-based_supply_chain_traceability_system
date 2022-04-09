@@ -1,9 +1,9 @@
 contract Manager {
-    uint256 public uId;
+    uint256 public id;
     string passwd;
 
-    constructor(uint256 _uId, string memory _passwd) {
-        uId = _uId;
+    constructor(uint256 _id, string memory _passwd) {
+        id = _id;
         passwd = _passwd;
     }
 }

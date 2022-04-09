@@ -16,4 +16,21 @@ contract CashFlow {
             return true;
         } else return false;
     }
+
+    function attachTransaction(uint256 transactionID) public returns (bool) {
+        Transactions.push(transactionID);
+        return true;
+    }
+
+    function checkCashFlow()
+        public
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256[] memory
+        )
+    {
+        return (initBalance, currBalance, Transactions);
+    }
 }

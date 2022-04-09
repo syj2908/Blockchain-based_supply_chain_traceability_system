@@ -39,10 +39,7 @@ contract LoanSystem {
     function deleteLender(string memory id) public returns (bool) {
         //删除指定放贷者
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (
-                keccak256(bytes(lenders[i].getLenderID())) ==
-                keccak256(bytes(id))
-            ) {
+            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))) {
                 return lenders[i].deleteLender();
             }
         }
@@ -54,19 +51,18 @@ contract LoanSystem {
         returns (
             string memory,
             string memory,
-            string memory
+            string memory,
+            uint256[] memory
         )
     {
         //返回放贷者信息(除密码)
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (
-                keccak256(bytes(lenders[i].getLenderID())) ==
-                keccak256(bytes(id))
-            )
-                if (lenders[i].isValid()) return lenders[i].getLenderInfo();
+            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id)))
+                if (lenders[i].valid()) return lenders[i].getLenderInfo();
                 else break;
         }
-        return ("NotFound", "NotFound", "NotFound");
+        uint256[] memory arr;
+        return ("NotFound", "NotFound", "NotFound", arr);
     }
 
     // function getAllLenderInfo() public view returns (Lender[] memory) {
@@ -85,7 +81,7 @@ contract LoanSystem {
         cashFlows.push(cashflow);
         for (uint256 i = 0; i < lenders.length; i++) {
             if (
-                keccak256(bytes(lenders[i].getLenderID())) ==
+                keccak256(bytes(lenders[i].id())) ==
                 keccak256(bytes(lenderID)) &&
                 lenders[i].valid()
             ) lenders[i].attachCashFlow(cashflow.id());
@@ -122,14 +118,43 @@ contract LoanSystem {
             );
             transactions.push(transaction);
             TransactionCount++;
+            cashFlows[cashFlowID].attachTransaction(transaction.id());
             return true;
         } else return false;
+    }
+
+    function checkCashFlow(uint256 cashflowID)
+        public
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256[] memory
+        )
+    {
+        return cashFlows[cashflowID].checkCashFlow();
+    }
+
+    function checkTransaction(uint256 transactionID)
+        public
+        view
+        returns (
+            uint256,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return transactions[transactionID].checkTransaction();
     }
 
     //业务无关函数
 
     function strConcat(string memory _a, string memory _b)
-        public
+        internal
         pure
         returns (string memory)
     {
@@ -144,7 +169,7 @@ contract LoanSystem {
         return string(ret);
     }
 
-    function generateID(uint8 t) public returns (string memory) {
+    function generateID(uint8 t) internal returns (string memory) {
         //产生一个用户id 作为主键
         IDarr[t]++;
         uint256 rawID = IDarr[t] - 1;
