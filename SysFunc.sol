@@ -1,17 +1,11 @@
-import "./Lender.sol";
-import "./Borrower.sol";
-import "./Manager.sol";
+//该文件暂不可用
 
 contract SysFunc {
     //业务无关的函数包
-    Lender[] public lenders;
-    // Borrower[] public borrowers;
-    // Manager[] public managers;
-
     uint256[] IDarr = [0, 0, 0]; //用户id计数器
 
     function strConcat(string memory _a, string memory _b)
-        internal
+        public
         pure
         returns (string memory)
     {
@@ -26,7 +20,7 @@ contract SysFunc {
         return string(ret);
     }
 
-    function generateID(uint8 t) private returns (string memory) {
+    function generateID(uint8 t) public returns (string memory) {
         //产生一个用户id 作为主键
         IDarr[t]++;
         uint256 rawID = IDarr[t] - 1;

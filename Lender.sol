@@ -4,6 +4,7 @@ contract Lender {
     string account;
     string passwd;
     string name;
+    bool valid;
 
     constructor(
         string memory _id,
@@ -15,6 +16,7 @@ contract Lender {
         account = _account;
         passwd = _passwd;
         name = _name;
+        valid = true;
     }
 
     function getLenderID() public view returns (string memory) {
@@ -31,5 +33,15 @@ contract Lender {
         )
     {
         return (id, account, name);
+    }
+
+    function deleteLender() public returns (bool) {
+        valid = false;
+        if (valid == false) return true;
+        else return false;
+    }
+
+    function isValid() public view returns (bool) {
+        return valid;
     }
 }
