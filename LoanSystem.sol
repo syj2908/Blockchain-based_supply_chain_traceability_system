@@ -9,11 +9,11 @@ import "./Transaction.sol";
 contract LoanSystem {
     //借贷系统
 
-    Lender[] public lenders;
-    Borrower[] public borrowers;
-    Manager[] public managers;
-    CashFlow[] public cashFlows;
-    Transaction[] public transactions;
+    Lender[] lenders;
+    Borrower[] borrowers;
+    Manager[] managers;
+    CashFlow[] cashFlows;
+    Transaction[] transactions;
 
     uint256[] IDarr = [0, 0, 0]; //用户id计数器
     uint256 cashFlowCount = 0; //资金流ID计数器
@@ -69,11 +69,11 @@ contract LoanSystem {
         return ("NotFound", "NotFound", "NotFound");
     }
 
-    function getAllLenderInfo() public view returns (Lender[] memory) {
-        //返回所有放贷者信息
-        //功能未实现 待补充
-        return lenders;
-    }
+    // function getAllLenderInfo() public view returns (Lender[] memory) {
+    //     //返回所有放贷者信息
+    //     //功能未实现 待补充
+    //     return lenders;
+    // }
 
     function createCashFlow(
         string memory lenderID,
@@ -101,6 +101,29 @@ contract LoanSystem {
         // }
         cashFlowCount++;
         return true;
+    }
+
+    function createTransaction(
+        uint256 cashFlowID,
+        string memory senderID,
+        string memory receiverID,
+        uint256 cashNum
+    ) public returns (bool) {
+        uint256 prevCash = cashFlows[cashFlowID].currBalance();
+        if (cashFlows[cashFlowID].withdraw(cashNum)) {
+            Transaction transaction = new Transaction(
+                TransactionCount,
+                cashFlowID,
+                senderID,
+                receiverID,
+                prevCash,
+                cashFlows[cashFlowID].currBalance(),
+                cashNum
+            );
+            transactions.push(transaction);
+            TransactionCount++;
+            return true;
+        } else return false;
     }
 
     //业务无关函数
