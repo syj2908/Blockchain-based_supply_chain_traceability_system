@@ -5,6 +5,7 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
+import "./SysFunc.sol";
 
 contract LoanSystem {
     //借贷系统
@@ -25,8 +26,7 @@ contract LoanSystem {
         string memory name
     ) public returns (string memory) {
         //创建一个放贷者并返回用户ID
-        string memory id;
-        id = generateID(0);
+        string memory id = generateID(0);
         Lender lender = new Lender(id, account, passwd, name);
         lenders.push(lender);
         return id;
@@ -103,7 +103,8 @@ contract LoanSystem {
         uint256 cashFlowID,
         string memory senderID,
         string memory receiverID,
-        uint256 cashNum
+        uint256 cashNum,
+        string memory note
     ) public returns (bool) {
         uint256 prevCash = cashFlows[cashFlowID].currBalance();
         if (cashFlows[cashFlowID].withdraw(cashNum)) {
@@ -114,7 +115,8 @@ contract LoanSystem {
                 receiverID,
                 prevCash,
                 cashFlows[cashFlowID].currBalance(),
-                cashNum
+                cashNum,
+                note
             );
             transactions.push(transaction);
             TransactionCount++;
@@ -145,6 +147,7 @@ contract LoanSystem {
             uint256,
             uint256,
             uint256,
+            string memory,
             uint256
         )
     {

@@ -7,6 +7,7 @@ contract Transaction {
     uint256 beforeTrans;
     uint256 afterTrans;
     uint256 cashNum;
+    string note;
     uint256 timestamp;
 
     constructor(
@@ -16,7 +17,8 @@ contract Transaction {
         string memory _receiverID,
         uint256 _beforeTrans,
         uint256 _afterTrans,
-        uint256 _cashNum
+        uint256 _cashNum,
+        string memory _note
     ) {
         id = _id;
         cashFlowID = _cashFlowID;
@@ -25,6 +27,7 @@ contract Transaction {
         beforeTrans = _beforeTrans;
         afterTrans = _afterTrans;
         cashNum = _cashNum;
+        note = _note;
         timestamp = block.timestamp;
     }
 
@@ -38,6 +41,7 @@ contract Transaction {
             uint256,
             uint256,
             uint256,
+            string memory,
             uint256
         )
     {
@@ -48,6 +52,7 @@ contract Transaction {
             beforeTrans,
             afterTrans,
             cashNum,
+            note,
             timestamp
         );
     }
