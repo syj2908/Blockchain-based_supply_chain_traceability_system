@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: SimPL-2.0
+pragma solidity ^0.8.7;
+
 contract Lender {
     //放贷者结构体
     string public id;
@@ -7,12 +10,12 @@ contract Lender {
     bool public valid;
     uint256[] cashFlows;
 
-    constructor(
+    constructor (
         string memory _id,
         string memory _account,
         string memory _passwd,
         string memory _name
-    ) {
+    ) public {
         id = _id;
         account = _account;
         passwd = _passwd;
@@ -20,10 +23,19 @@ contract Lender {
         valid = true;
     }
 
-    function getLenderInfo()
-        public
-        view
-        returns (
+    function attachCashFlow(uint256 cashFlowID) public returns (bool) {
+        cashFlows.push(cashFlowID);
+        return true;
+    }
+
+
+    string InnerPasswd="123456";
+    function LenderLogin(string memory InputId) public returns(bool){
+      if(keccak256(bytes(InputId))==keccak256(bytes(InnerPasswd))) return true;
+      else return false;
+    }
+
+    function getLenderInfo() public view returns (
             string memory,
             string memory,
             string memory,
@@ -39,8 +51,6 @@ contract Lender {
         else return false;
     }
 
-    function attachCashFlow(uint256 cashFlowID) public returns (bool) {
-        cashFlows.push(cashFlowID);
-        return true;
-    }
+    
+    
 }
