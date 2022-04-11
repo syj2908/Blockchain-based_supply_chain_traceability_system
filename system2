@@ -1,159 +1,36 @@
+// SPDX-License-Identifier: SimPL-2.0
 pragma solidity ^0.8.7;
-
 import "./Lender.sol";
 import "./Borrower.sol";
 import "./Manager.sol";
-import "./CashFlow.sol";
 import "./Transaction2.sol";
 
-contract LoanSystem {
-    //借贷系统
+contract Transaction {
+    uint256 public transactionID;
+    string lenderID;
+    string borrowerID;
+    uint256 cashNum;
+    uint256[] Transactions;
+    bool flag=true;
 
-    Lender[] lenders;
-    Borrower[] borrowers;
-    Manager[] managers;
-    CashFlow[] cashFlows;
-    Transaction[] transactions;
-
-    uint256[] IDarr = [0, 0, 0]; //用户id计数器
-    uint256 cashFlowCount = 0; //资金流ID计数器
-    uint256 TransactionCount = 0; //交易ID计数器
-
-    function createLender(string memory account,string memory passwd,string memory name
-    ) public returns (string memory) {
-        string memory id = generateID(0);
-        Lender lender = new Lender(id, account, passwd, name);
-        lenders.push(lender);
-        return id;
+    constructor(uint256 _transactionID, string memory _lenderID, string memory _borrowerID, uint256 _cashNum) {
+        transactionID = _transactionID;
+        lenderID =_lenderID;
+        borrowerID = _borrowerID;
+        cashNum = _cashNum;
     }
 
-    function createBorrower(string memory passwd,string memory name,uint256 balance,uint256 reputation)
-     public returns (string memory) {
-        string memory id= generateID(1);
-        Borrower borrower = new Borrower(id,passwd,name,balance,reputation);  //reputation？
-        borrowers.push(borrower);
-        return id;
+    function attachTransaction(uint256 transactionID) public returns (bool) {
+        Transactions.push(transactionID);
+        return true;
     }
 
-    function createManager(string memory passwd) public returns (string memory) {
-        string memory id =  generateID(2);
-        Manager manager = new Manager(id,passwd);
-        managers.push(manager);
-        return id;
-    }
-    
-    function deleteLender(string memory id) public returns (bool) {
-        for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))) {
-                return lenders[i].deleteLender();
-            }
-        }
-    }
-     
-    function deleteBorrower(string memory id) public returns (bool) {
-        for (uint256 i = 0; i < borrowers.length; i++) {
-            if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
-                return borrowers[i].deleteBorrower();
-            }
-        }
-    }
-
-    function deleteManager(string memory id) public returns (bool) {
-        for (uint256 i = 0; i < managers.length; i++) {
-            if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
-                return managers[i].deleteManager();
-            }
-        }
-    }
-
-    function getLenderInfo(string memory id)
-        public view returns (string memory, string memory, string memory, uint256[] memory){
-        for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))){
-                if (lenders[i].valid()) return lenders[i].getLenderInfo();
-                else break;
-            }
-        }
-        //uint256[] memory arr;
-       // return ("NotFound", "NotFound", "NotFound", arr);
-    }
-
-    
-    function createTransaction(
-        string memory transactionID,
-        string memory lenderID,
-        string memory borrowerID,
-        uint256 cashNum) public returns (bool) {
-            Transaction transaction = new Transaction(transactionID, lenderID,borrowerID,cashNum);
-            transactions.push(transaction);
-            TransactionCount++;
-       /*for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(lenders[i].id())) ==keccak256(bytes(lenderID)) &&lenders[i].valid()) 
-            lenders[i].attachCashFlow(cashflow.id());
-        }*/
-            transactions[transactionID].attachTransaction(transaction.id());
-            return true;
-        
-    }
-
-
-    function checkTransaction(uint256 transactionID)
-        public view returns (string memory,string memory,string memory,uint256,bool)
+    function checkTransaction()
+        public view returns (uint256,string memory,string memory,uint256,bool)
     {
-        return transactions[transactionID].checkTransaction();
-    }
-
-
-
-
-
-
-
-    //业务无关函数
-
-    function strConcat(string memory _a, string memory _b)
-        internal
-        pure
-        returns (string memory)
-    {
-        //字符串拼接
-        bytes memory _ba = bytes(_a);
-        bytes memory _bb = bytes(_b);
-        string memory ret = new string(_ba.length + _bb.length);
-        bytes memory bret = bytes(ret);
-        uint256 k = 0;
-        for (uint256 i = 0; i < _ba.length; i++) bret[k++] = _ba[i];
-        for (uint256 i = 0; i < _bb.length; i++) bret[k++] = _bb[i];
-        return string(ret);
-    }
-
-    function generateID(uint8 t) internal returns (string memory) {
-        //产生一个用户id 作为主键
-        IDarr[t]++;
-        uint256 rawID = IDarr[t] - 1;
-        string memory strID;
-        if (rawID == 0) strID = "0";
-        else {
-            uint256 cp = rawID;
-            uint256 len = 0;
-            while (cp != 0) {
-                len++;
-                cp /= 10;
-            }
-            bytes memory bstr = new bytes(len);
-            while (rawID != 0) {
-                len--;
-                uint8 temp = (48 + uint8(rawID - (rawID / 10) * 10));
-                bytes1 b1 = bytes1(temp);
-                bstr[len] = b1;
-                rawID /= 10;
-            }
-            strID = string(bstr);
-        }
-        string memory prefix;
-        if (t == 0) prefix = "0";
-        else if (t == 1) prefix = "1";
-        else prefix = "2";
-        return strConcat(prefix, strID);
+        //if(余额不够) flag=false;
+        if(flag)
+        return (transactionID,lenderID,borrowerID,cashNum,flag);
+        else return(999,"Flase","Flase",0,false);
     }
 }
