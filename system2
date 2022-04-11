@@ -49,7 +49,7 @@ contract LoanSystem {
             }
         }
     }
-    
+     
     function deleteBorrower(string memory id) public returns (bool) {
         for (uint256 i = 0; i < borrowers.length; i++) {
             if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
