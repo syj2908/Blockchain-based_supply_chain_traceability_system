@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: SimPL-2.0
 pragma solidity ^0.8.7;
+import "./Lender.sol";
+import "./Borrower.sol";
+import "./Manager.sol";
+import "./Transaction2.sol";
+
 contract Transaction {
-    string transactionID;
+    uint256 public transactionID;
     string lenderID;
     string borrowerID;
     uint256 cashNum;
     uint256[] Transactions;
     bool flag=true;
 
-    constructor(string memory _transactionID, string memory _lenderID, string memory _borrowerID, uint256 _cashNum) {
+    constructor(uint256 _transactionID, string memory _lenderID, string memory _borrowerID, uint256 _cashNum) {
         transactionID = _transactionID;
         lenderID =_lenderID;
         borrowerID = _borrowerID;
@@ -21,11 +26,11 @@ contract Transaction {
     }
 
     function checkTransaction()
-        public view returns (string memory,string memory,string memory,uint256,bool)
+        public view returns (uint256,string memory,string memory,uint256,bool)
     {
         //if(余额不够) flag=false;
         if(flag)
         return (transactionID,lenderID,borrowerID,cashNum,flag);
-        else return("Flase","Flase","Flase",0,false);
+        else return(999,"Flase","Flase",0,false);
     }
 }
