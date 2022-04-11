@@ -21,9 +21,8 @@ contract Borrower {
         valid = true;
     }
 
-    string InnerPasswd="123456";
-    function BorrowerLogin(string memory InputId) public returns(bool){
-      if(keccak256(bytes(InputId))==keccak256(bytes(InnerPasswd))) return true;
+    function BorrowerLogin(string memory _passwd) public view returns(bool){
+      if(keccak256(bytes(passwd))==keccak256(bytes(_passwd))) return true;
       else return false;
     }
 

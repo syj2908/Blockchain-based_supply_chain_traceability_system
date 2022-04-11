@@ -28,10 +28,8 @@ contract Lender {
         return true;
     }
 
-
-    string InnerPasswd="123456";
-    function LenderLogin(string memory InputId) public returns(bool){
-      if(keccak256(bytes(InputId))==keccak256(bytes(InnerPasswd))) return true;
+    function LenderLogin(string memory _passwd) public view returns(bool){
+      if(keccak256(bytes(passwd))==keccak256(bytes(_passwd))) return true;
       else return false;
     }
 
@@ -50,7 +48,4 @@ contract Lender {
         if (valid == false) return true;
         else return false;
     }
-
-    
-    
 }
