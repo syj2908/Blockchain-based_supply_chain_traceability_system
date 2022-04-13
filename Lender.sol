@@ -7,7 +7,7 @@ contract Lender {
     string account;
     string passwd;
     string name;
-    bool public valid;
+    bool public valid=true;
     uint256[] cashFlows;
 
     constructor(
@@ -20,7 +20,6 @@ contract Lender {
         account = _account;
         passwd = _passwd;
         name = _name;
-        valid = true;
     }
 
     function attachCashFlow(uint256 cashFlowID) public returns (bool) {

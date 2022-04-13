@@ -102,15 +102,13 @@ contract LoanSystem {
                 lenders[i].valid()
             ) lenders[i].attachCashFlow(cashflow.id());
         }
-        //涉及借贷者部分 待补充
-        //
-        // for (uint256 i = 0; i < borrowers.length; i++) {
-        //     if (
-        //         keccak256(bytes(borrowers[i].getBorrowerID())) ==
-        //         keccak256(bytes(borrowerID)) &&
-        //         borrowers[i].isValid()
-        //     ) borrowers[i].attachCashFlow(cashFlowCount);
-        // }
+        for (uint256 i = 0; i < borrowers.length; i++) {
+            if (
+                keccak256(bytes(borrowers[i].id())) ==
+                keccak256(bytes(borrowerID)) &&
+                borrowers[i].valid()
+            ) borrowers[i].attachCashFlow(cashFlowCount);
+        }
         cashFlowCount++;
         return true;
     }

@@ -7,7 +7,8 @@ contract Borrower {
     string name;
     uint256 balance;
     uint256 reputation;
-    bool public valid;
+    bool public valid = true;
+    uint256[] cashFlows;
 
     constructor(
         string memory _id,
@@ -21,7 +22,11 @@ contract Borrower {
         name = _name;
         balance = _balance;
         reputation = _reputation;
-        valid = true;
+    }
+
+    function attachCashFlow(uint256 cashFlowID) public returns (bool) {
+        cashFlows.push(cashFlowID);
+        return true;
     }
 
     function BorrowerLogin(string memory _passwd) public view returns (bool) {
@@ -42,7 +47,7 @@ contract Borrower {
         return (id, name, balance, reputation);
     }
 
-    function LoanApply(string memory Id, uint256 Amount) public {
+    function LoanApply(string memory id, uint256 Amount) public {
         // if(check一下reputation)??
         balance += Amount;
     }
