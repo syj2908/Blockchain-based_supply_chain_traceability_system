@@ -10,13 +10,28 @@ import "./SysFunc.sol";
 contract LoanSystem {
     //借贷系统
 
+    event CreateLender(string id, string account, string name);
+    event CreateBorrower(string id, string account, string name);
+    event CreateManager(string id);
+    event DeleteLender(string id, bool result);
+    event DeleteBorrower(string id, bool result);
+    event DeleteManager(string id, bool result);
+    // event CheckInfo(string id);
+    event CreateCashFlow(string from, string to, uint256 amount);
+    event CreateTransaction(
+        string from,
+        string to,
+        uint256 cashFlowID,
+        uint256 amount
+    );
+
     Lender[] lenders;
     Borrower[] borrowers;
     Manager[] managers;
     CashFlow[] cashFlows;
     Transaction[] transactions;
 
-    uint256[] IDarr = [0, 0, 0]; //用户id计数器
+    uint256[] IDarr = [0, 0, 0]; //用户ID计数器
     uint256 cashFlowCount = 0; //资金流ID计数器
     uint256 TransactionCount = 0; //交易ID计数器
 
@@ -29,6 +44,7 @@ contract LoanSystem {
         string memory id = generateID(0);
         Lender lender = new Lender(id, account, passwd, name);
         lenders.push(lender);
+        emit CreateLender(id, account, name);
         return id;
     }
 
@@ -41,6 +57,7 @@ contract LoanSystem {
         string memory id = generateID(1);
         Borrower borrower = new Borrower(id, account, passwd, name);
         borrowers.push(borrower);
+        emit CreateBorrower(id, account, name);
         return id;
     }
 
@@ -52,6 +69,7 @@ contract LoanSystem {
         string memory id = generateID(2);
         Manager manager = new Manager(id, passwd);
         managers.push(manager);
+        emit CreateManager(id);
         return id;
     }
 
@@ -59,7 +77,9 @@ contract LoanSystem {
         //删除指定放贷者
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))) {
-                return lenders[i].deleteLender();
+                bool result = lenders[i].deleteLender();
+                emit DeleteLender(id, result);
+                return result;
             }
         }
     }
@@ -68,7 +88,9 @@ contract LoanSystem {
         //删除指定借贷者
         for (uint256 i = 0; i < borrowers.length; i++) {
             if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
-                return borrowers[i].deleteBorrower();
+                bool result = borrowers[i].deleteBorrower();
+                emit DeleteBorrower(id, result);
+                return result;
             }
         }
     }
@@ -77,7 +99,9 @@ contract LoanSystem {
         //删除指定管理员
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
-                return managers[i].deleteManager();
+                bool result = managers[i].deleteManager();
+                emit DeleteManager(id, result);
+                return result;
             }
         }
     }
@@ -156,6 +180,7 @@ contract LoanSystem {
                 borrowers[i].valid()
             ) borrowers[i].attachCashFlow(cashFlowCount);
         }
+        emit CreateCashFlow(lenderID, borrowerID, cashNum);
         cashFlowCount++;
         return true;
     }
@@ -183,6 +208,7 @@ contract LoanSystem {
             transactions.push(transaction);
             TransactionCount++;
             cashFlows[cashFlowID].attachTransaction(transaction.id());
+            emit CreateTransaction(senderID, receiverID, cashFlowID, cashNum);
             return true;
         } else return false;
     }
