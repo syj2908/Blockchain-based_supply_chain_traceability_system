@@ -6,19 +6,13 @@ contract Manager {
     string passwd;
     bool public valid;
 
-    constructor(string memory  _id, string memory _passwd) {
+    constructor(string memory _id, string memory _passwd) {
         id = _id;
         passwd = _passwd;
-        valid=true;
+        valid = true;
     }
 
-    function getManagerInfo()
-        public
-        view
-        returns (
-            string  memory
-        )
-    {
+    function getManagerInfo() public view returns (string memory) {
         return (id);
     }
 
@@ -28,10 +22,11 @@ contract Manager {
         else return false;
     }
 
-     string InnerPasswd="123456";
+    string InnerPasswd = "123456";
 
-    function ManagerLogin(string memory InputId) public returns(bool){
-      if(keccak256(bytes(InputId))==keccak256(bytes(InnerPasswd))) return true;
-      else return false;
-}
+    function ManagerLogin(string memory InputId) public returns (bool) {
+        if (keccak256(bytes(InputId)) == keccak256(bytes(InnerPasswd)))
+            return true;
+        else return false;
+    }
 }

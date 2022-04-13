@@ -34,14 +34,16 @@ contract LoanSystem {
 
     // function createBorrower(string memory passwd) public returns (uint256) {}
 
-
-    function createManager(string memory passwd) public returns (string memory) {
-        string memory id =  generateID(2);
-        Manager manager = new Manager(id,passwd);
+    function createManager(string memory passwd)
+        public
+        returns (string memory)
+    {
+        string memory id = generateID(2);
+        Manager manager = new Manager(id, passwd);
         managers.push(manager);
         return id;
     }
-    
+
     function deleteLender(string memory id) public returns (bool) {
         //删除指定放贷者
         for (uint256 i = 0; i < lenders.length; i++) {
@@ -50,7 +52,7 @@ contract LoanSystem {
             }
         }
     }
-    
+
     function deleteManager(string memory id) public returns (bool) {
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {

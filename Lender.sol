@@ -10,7 +10,7 @@ contract Lender {
     bool public valid;
     uint256[] cashFlows;
 
-    constructor (
+    constructor(
         string memory _id,
         string memory _account,
         string memory _passwd,
@@ -28,12 +28,15 @@ contract Lender {
         return true;
     }
 
-    function LenderLogin(string memory _passwd) public view returns(bool){
-      if(keccak256(bytes(passwd))==keccak256(bytes(_passwd))) return true;
-      else return false;
+    function LenderLogin(string memory _passwd) public view returns (bool) {
+        if (keccak256(bytes(passwd)) == keccak256(bytes(_passwd))) return true;
+        else return false;
     }
 
-    function getLenderInfo() public view returns (
+    function getLenderInfo()
+        public
+        view
+        returns (
             string memory,
             string memory,
             string memory,

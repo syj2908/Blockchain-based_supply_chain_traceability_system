@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: SimPL-2.0
 pragma solidity ^0.8.7;
+
 contract Borrower {
     string public id;
     string passwd;
@@ -7,7 +8,6 @@ contract Borrower {
     uint256 balance;
     uint256 reputation;
     bool public valid;
-   
 
     constructor(
         string memory _id,
@@ -24,25 +24,32 @@ contract Borrower {
         valid = true;
     }
 
-    function BorrowerLogin(string memory _passwd) public view returns(bool){
-      if(keccak256(bytes(passwd))==keccak256(bytes(_passwd))) return true;
-      else return false;
+    function BorrowerLogin(string memory _passwd) public view returns (bool) {
+        if (keccak256(bytes(passwd)) == keccak256(bytes(_passwd))) return true;
+        else return false;
     }
 
-   function getBorrowerInfo() public view returns
-   (string memory,string memory,uint256,uint256){
-     return (id,name,balance,reputation);
-   }
+    function getBorrowerInfo()
+        public
+        view
+        returns (
+            string memory,
+            string memory,
+            uint256,
+            uint256
+        )
+    {
+        return (id, name, balance, reputation);
+    }
 
-   function LoanApply(string memory Id,uint256 Amount) public {
-     // if(check一下reputation)??
-      balance += Amount;
-   }
+    function LoanApply(string memory Id, uint256 Amount) public {
+        // if(check一下reputation)??
+        balance += Amount;
+    }
 
-   function deleteBorrower() public returns (bool) {
+    function deleteBorrower() public returns (bool) {
         valid = false;
         if (valid == false) return true;
         else return false;
     }
-
 }
