@@ -32,12 +32,23 @@ contract LoanSystem {
         return id;
     }
 
-    // function createBorrower(string memory passwd) public returns (uint256) {}
+    function createBorrower(
+        string memory account,
+        string memory passwd,
+        string memory name
+    ) public returns (string memory) {
+        //创建一个借贷者并返回用户ID
+        string memory id = generateID(1);
+        Borrower borrower = new Borrower(id, account, passwd, name);
+        borrowers.push(borrower);
+        return id;
+    }
 
     function createManager(string memory passwd)
         public
         returns (string memory)
     {
+        //创建一个管理员并返回管理员ID
         string memory id = generateID(2);
         Manager manager = new Manager(id, passwd);
         managers.push(manager);
@@ -53,7 +64,17 @@ contract LoanSystem {
         }
     }
 
+    function deleteBorrower(string memory id) public returns (bool) {
+        //删除指定借贷者
+        for (uint256 i = 0; i < borrowers.length; i++) {
+            if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
+                return borrowers[i].deleteBorrower();
+            }
+        }
+    }
+
     function deleteManager(string memory id) public returns (bool) {
+        //删除指定管理员
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
                 return managers[i].deleteManager();
@@ -81,10 +102,36 @@ contract LoanSystem {
         return ("NotFound", "NotFound", "NotFound", arr);
     }
 
+    function getBorrowerInfo(string memory id)
+        public
+        view
+        returns (
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256[] memory
+        )
+    {
+        //返回借贷者信息(除密码)
+        for (uint256 i = 0; i < borrowers.length; i++) {
+            if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id)))
+                if (borrowers[i].valid()) return borrowers[i].getBorrowerInfo();
+                else break;
+        }
+        uint256[] memory arr;
+        return (
+            "NotFound",
+            "NotFound",
+            type(uint256).max,
+            type(uint256).max,
+            arr
+        );
+    }
+
     // function getAllLenderInfo() public view returns (Lender[] memory) {
     //     //返回所有放贷者信息
     //     //功能未实现 待补充
-    //     return lenders;
     // }
 
     function createCashFlow(
@@ -120,6 +167,7 @@ contract LoanSystem {
         uint256 cashNum,
         string memory note
     ) public returns (bool) {
+        //发起一次交易
         uint256 prevCash = cashFlows[cashFlowID].currBalance();
         if (cashFlows[cashFlowID].withdraw(cashNum)) {
             Transaction transaction = new Transaction(
@@ -148,6 +196,7 @@ contract LoanSystem {
             uint256[] memory
         )
     {
+        //查看资金流的详细信息
         return cashFlows[cashflowID].checkCashFlow();
     }
 
@@ -165,6 +214,7 @@ contract LoanSystem {
             uint256
         )
     {
+        //查看交易的详细信息
         return transactions[transactionID].checkTransaction();
     }
 

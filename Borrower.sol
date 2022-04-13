@@ -3,25 +3,24 @@ pragma solidity ^0.8.7;
 
 contract Borrower {
     string public id;
+    string account;
     string passwd;
     string name;
     uint256 balance;
-    uint256 reputation;
+    uint256 reputation = 100;
     bool public valid = true;
     uint256[] cashFlows;
 
     constructor(
         string memory _id,
+        string memory _account,
         string memory _passwd,
-        string memory _name,
-        uint256 _balance,
-        uint256 _reputation
+        string memory _name
     ) public {
         id = _id;
+        account=_account;
         passwd = _passwd;
         name = _name;
-        balance = _balance;
-        reputation = _reputation;
     }
 
     function attachCashFlow(uint256 cashFlowID) public returns (bool) {
@@ -41,10 +40,11 @@ contract Borrower {
             string memory,
             string memory,
             uint256,
-            uint256
+            uint256,
+            uint256[] memory
         )
     {
-        return (id, name, balance, reputation);
+        return (account, name, balance, reputation, cashFlows);
     }
 
     function LoanApply(string memory id, uint256 Amount) public {
