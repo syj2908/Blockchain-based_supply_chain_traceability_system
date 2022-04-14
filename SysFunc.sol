@@ -1,8 +1,7 @@
-//该文件暂不可用
-
-contract SysFunc {
+// SPDX-License-Identifier: SimPL-2.0
+pragma solidity ^0.8.7;
+library SysFunc {
     //业务无关的函数包
-    uint256[] IDarr = [0, 0, 0]; //用户id计数器
 
     function strConcat(string memory _a, string memory _b)
         public
@@ -20,10 +19,9 @@ contract SysFunc {
         return string(ret);
     }
 
-    function generateID(uint8 t) public returns (string memory) {
+    function GenerateID(uint8 t,uint256 IDarr) public returns (string memory) {
         //产生一个用户id 作为主键
-        IDarr[t]++;
-        uint256 rawID = IDarr[t] - 1;
+        uint256 rawID = IDarr - 1;
         string memory strID;
         if (rawID == 0) strID = "0";
         else {
