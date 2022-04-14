@@ -245,7 +245,13 @@ contract LoanSystem {
     }
 
     //业务无关函数
-
+    function generateID(uint8 t) internal returns (string memory) {
+        //产生一个用户id 作为主键
+        IDarr[t]++;
+        return SysFunc.GenerateID(t,IDarr[t]);
+    }
+    
+/*
     function strConcat(string memory _a, string memory _b)
         internal
         pure
@@ -291,4 +297,5 @@ contract LoanSystem {
         else prefix = "2";
         return strConcat(prefix, strID);
     }
+    */
 }
