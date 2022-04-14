@@ -161,7 +161,7 @@ contract LoanSystem {
         string memory lenderID,
         string memory borrowerID,
         uint256 cashNum
-    ) public returns (bool) {
+    ) public returns (uint256) {
         //发起一条资金流
         CashFlow cashflow = new CashFlow(cashFlowCount, cashNum);
         cashFlows.push(cashflow);
@@ -181,7 +181,7 @@ contract LoanSystem {
         }
         emit CreateCashFlow(lenderID, borrowerID, cashNum);
         cashFlowCount++;
-        return true;
+        return cashflow.id();
     }
 
     function createTransaction(
@@ -190,7 +190,7 @@ contract LoanSystem {
         string memory receiverID,
         uint256 cashNum,
         string memory note
-    ) public returns (bool) {
+    ) public returns (uint256) {
         //发起一次交易
         uint256 prevCash = cashFlows[cashFlowID].currBalance();
         if (cashFlows[cashFlowID].withdraw(cashNum)) {
@@ -208,8 +208,8 @@ contract LoanSystem {
             TransactionCount++;
             cashFlows[cashFlowID].attachTransaction(transaction.id());
             emit CreateTransaction(senderID, receiverID, cashFlowID, cashNum);
-            return true;
-        } else return false;
+            return transaction.id();
+        } else return type(uint256).max;
     }
 
     function checkCashFlow(uint256 cashflowID)
