@@ -2,19 +2,20 @@ pragma solidity ^0.8.7;
 
 import "./Lender.sol";
 import "./Borrower.sol";
-//import "./Manager.sol";
+import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
+import "./SysFunc.sol";
 
 contract LoanSystem {
     //借贷系统
 
     event CreateLender(string id, string account, string name);
     event CreateBorrower(string id, string account, string name);
-    // event CreateManager(string id);
+    event CreateManager(string id);
     event DeleteLender(string id, bool result);
     event DeleteBorrower(string id, bool result);
-    // event DeleteManager(string id, bool result);
+    event DeleteManager(string id, bool result);
     // event CheckInfo(string id);
     event CreateCashFlow(string from, string to, uint256 amount);
     event CreateTransaction(
@@ -26,7 +27,7 @@ contract LoanSystem {
 
     Lender[] lenders;
     Borrower[] borrowers;
-    // Manager[] managers;
+    Manager[] managers;
     CashFlow[] cashFlows;
     Transaction[] transactions;
 
@@ -60,17 +61,17 @@ contract LoanSystem {
         return id;
     }
 
-    // function createManager(string memory passwd)
-    //     public
-    //     returns (string memory)
-    // {
-    //     //创建一个管理员并返回管理员ID
-    //     string memory id = generateID(2);
-    //     Manager manager = new Manager(id, passwd);
-    //     managers.push(manager);
-    //     emit CreateManager(id);
-    //     return id;
-    // }
+    function createManager(string memory passwd)
+        public
+        returns (string memory)
+    {
+        //创建一个管理员并返回管理员ID
+        string memory id = generateID(2);
+        Manager manager = new Manager(id, passwd);
+        managers.push(manager);
+        emit CreateManager(id);
+        return id;
+    }
 
     function deleteLender(string memory id) public returns (bool) {
         //删除指定放贷者
@@ -94,16 +95,16 @@ contract LoanSystem {
         }
     }
 
-    // function deleteManager(string memory id) public returns (bool) {
-    //     //删除指定管理员
-    //     for (uint256 i = 0; i < lenders.length; i++) {
-    //         if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
-    //             bool result = managers[i].deleteManager();
-    //             emit DeleteManager(id, result);
-    //             return result;
-    //         }
-    //     }
-    // }
+    function deleteManager(string memory id) public returns (bool) {
+        //删除指定管理员
+        for (uint256 i = 0; i < lenders.length; i++) {
+            if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
+                bool result = managers[i].deleteManager();
+                emit DeleteManager(id, result);
+                return result;
+            }
+        }
+    }
 
     function getLenderInfo(string memory id)
         public
@@ -244,7 +245,13 @@ contract LoanSystem {
     }
 
     //业务无关函数
-
+    function generateID(uint8 t) internal returns (string memory) {
+        //产生一个用户id 作为主键
+        IDarr[t]++;
+        return SysFunc.GenerateID(t,IDarr[t]);
+    }
+    
+/*
     function strConcat(string memory _a, string memory _b)
         internal
         pure
@@ -290,4 +297,5 @@ contract LoanSystem {
         else prefix = "2";
         return strConcat(prefix, strID);
     }
+    */
 }
