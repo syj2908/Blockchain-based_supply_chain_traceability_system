@@ -2,11 +2,11 @@
 pragma solidity ^0.8.7;
 
 contract Manager {
-    string public id;
+    address id;
     string passwd;
     bool public valid = true;
 
-    constructor(string memory _id, string memory _passwd) {
+    constructor(address _id, string memory _passwd) {
         id = _id;
         passwd = _passwd;
     }
