@@ -10,17 +10,17 @@ import "./SysFunc.sol";
 contract LoanSystem {
     //借贷系统
 
-    event CreateLender(string id, string account, string name);
-    event CreateBorrower(string id, string account, string name);
-    event CreateManager(string id);
-    event DeleteLender(string id, bool result);
-    event DeleteBorrower(string id, bool result);
-    event DeleteManager(string id, bool result);
+    event CreateLender(address id, string account, string name);
+    event CreateBorrower(address id, string account, string name);
+    event CreateManager(address id);
+    event DeleteLender(address id, bool result);
+    event DeleteBorrower(address id, bool result);
+    event DeleteManager(address id, bool result);
     // event CheckInfo(string id);
-    event CreateCashFlow(string from, string to, uint256 amount);
+    event CreateCashFlow(address from, address to, uint256 amount);
     event CreateTransaction(
-        string from,
-        string to,
+        address from,
+        address to,
         uint256 cashFlowID,
         uint256 amount
     );
@@ -39,9 +39,9 @@ contract LoanSystem {
         string memory account,
         string memory passwd,
         string memory name
-    ) public returns (string memory) {
+    ) public returns (address) {
         //创建一个放贷者并返回用户ID
-        string memory id = generateID(0);
+       address id=0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; //可修改
         Lender lender = new Lender(id, account, passwd, name);
         lenders.push(lender);
         emit CreateLender(id, account, name);
@@ -52,9 +52,9 @@ contract LoanSystem {
         string memory account,
         string memory passwd,
         string memory name
-    ) public returns (string memory) {
+    ) public returns (address) {
         //创建一个借贷者并返回用户ID
-        string memory id = generateID(1);
+        address id=0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2; //可修改
         Borrower borrower = new Borrower(id, account, passwd, name);
         borrowers.push(borrower);
         emit CreateBorrower(id, account, name);
@@ -63,17 +63,16 @@ contract LoanSystem {
 
     function createManager(string memory passwd)
         public
-        returns (string memory)
+        returns (address)
     {
-        //创建一个管理员并返回管理员ID
-        string memory id = generateID(2);
+        address id=0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db; //可修改
         Manager manager = new Manager(id, passwd);
         managers.push(manager);
         emit CreateManager(id);
         return id;
     }
 
-    function deleteLender(string memory id) public returns (bool) {
+    function deleteLender(address id) public returns (bool) {
         //删除指定放贷者
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))) {
@@ -84,7 +83,7 @@ contract LoanSystem {
         }
     }
 
-    function deleteBorrower(string memory id) public returns (bool) {
+    function deleteBorrower(address id) public returns (bool) {
         //删除指定借贷者
         for (uint256 i = 0; i < borrowers.length; i++) {
             if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
@@ -95,7 +94,7 @@ contract LoanSystem {
         }
     }
 
-    function deleteManager(string memory id) public returns (bool) {
+    function deleteManager(address id) public returns (bool) {
         //删除指定管理员
         for (uint256 i = 0; i < lenders.length; i++) {
             if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
@@ -106,11 +105,8 @@ contract LoanSystem {
         }
     }
 
-    function getLenderInfo(string memory id)
-        public
-        view
-        returns (
-            string memory,
+    function getLenderInfo(address id)
+        public view returns (
             string memory,
             string memory,
             uint256[] memory
@@ -123,13 +119,11 @@ contract LoanSystem {
                 else break;
         }
         uint256[] memory arr;
-        return ("NotFound", "NotFound", "NotFound", arr);
+        return ("NotFound", "NotFound", arr);
     }
 
-    function getBorrowerInfo(string memory id)
-        public
-        view
-        returns (
+    function getBorrowerInfo(address id)
+        public view returns (
             string memory,
             string memory,
             uint256,
@@ -267,7 +261,6 @@ contract LoanSystem {
         for (uint256 i = 0; i < _bb.length; i++) bret[k++] = _bb[i];
         return string(ret);
     }
-
     function generateID(uint8 t) internal returns (string memory) {
         //产生一个用户id 作为主键
         IDarr[t]++;
