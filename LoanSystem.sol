@@ -11,12 +11,6 @@ import "./SysFunc.sol";
 contract LoanSystem {
     //借贷系统
 
-    event CreateLender(address id, string account, string name);
-    event CreateBorrower(address id, string account, string name);
-    event CreateManager(address id);
-    event DeleteLender(address id, bool result);
-    event DeleteBorrower(address id, bool result);
-    event DeleteManager(address id, bool result);
     event CreateCashFlow(address from, address to, uint256 amount);
     event CreateTransaction(
         address from,
