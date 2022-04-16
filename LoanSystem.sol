@@ -16,7 +16,6 @@ contract LoanSystem {
     event DeleteLender(address id, bool result);
     event DeleteBorrower(address id, bool result);
     event DeleteManager(address id, bool result);
-    // event CheckInfo(string id);
     event CreateCashFlow(address from, address to, uint256 amount);
     event CreateTransaction(
         address from,
@@ -41,7 +40,7 @@ contract LoanSystem {
         string memory name
     ) public returns (address) {
         //创建一个放贷者并返回用户ID
-       address id=0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; //可修改
+        address id = msg.sender;
         Lender lender = new Lender(id, account, passwd, name);
         lenders.push(lender);
         emit CreateLender(id, account, name);
@@ -54,18 +53,15 @@ contract LoanSystem {
         string memory name
     ) public returns (address) {
         //创建一个借贷者并返回用户ID
-        address id=0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2; //可修改
+        address id = msg.sender;
         Borrower borrower = new Borrower(id, account, passwd, name);
         borrowers.push(borrower);
         emit CreateBorrower(id, account, name);
         return id;
     }
 
-    function createManager(string memory passwd)
-        public
-        returns (address)
-    {
-        address id=0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db; //可修改
+    function createManager(string memory passwd) public returns (address) {
+        address id = msg.sender;
         Manager manager = new Manager(id, passwd);
         managers.push(manager);
         emit CreateManager(id);
@@ -75,7 +71,7 @@ contract LoanSystem {
     function deleteLender(address id) public returns (bool) {
         //删除指定放贷者
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id))) {
+            if (lenders[i].id() == id) {
                 bool result = lenders[i].deleteLender();
                 emit DeleteLender(id, result);
                 return result;
@@ -86,7 +82,7 @@ contract LoanSystem {
     function deleteBorrower(address id) public returns (bool) {
         //删除指定借贷者
         for (uint256 i = 0; i < borrowers.length; i++) {
-            if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id))) {
+            if (borrowers[i].id() == id) {
                 bool result = borrowers[i].deleteBorrower();
                 emit DeleteBorrower(id, result);
                 return result;
@@ -97,7 +93,7 @@ contract LoanSystem {
     function deleteManager(address id) public returns (bool) {
         //删除指定管理员
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(managers[i].id())) == keccak256(bytes(id))) {
+            if (managers[i].id() == id) {
                 bool result = managers[i].deleteManager();
                 emit DeleteManager(id, result);
                 return result;
@@ -106,7 +102,10 @@ contract LoanSystem {
     }
 
     function getLenderInfo(address id)
-        public view returns (
+        public
+        view
+        returns (
+            address,
             string memory,
             string memory,
             uint256[] memory
@@ -114,16 +113,20 @@ contract LoanSystem {
     {
         //返回放贷者信息(除密码)
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (keccak256(bytes(lenders[i].id())) == keccak256(bytes(id)))
+            if (lenders[i].id() == id)
                 if (lenders[i].valid()) return lenders[i].getLenderInfo();
                 else break;
         }
+        address addr = 0x0000000000000000000000000000000000000000;
         uint256[] memory arr;
-        return ("NotFound", "NotFound", arr);
+        return (addr, "NotFound", "NotFound", arr);
     }
 
     function getBorrowerInfo(address id)
-        public view returns (
+        public
+        view
+        returns (
+            address,
             string memory,
             string memory,
             uint256,
@@ -133,12 +136,14 @@ contract LoanSystem {
     {
         //返回借贷者信息(除密码)
         for (uint256 i = 0; i < borrowers.length; i++) {
-            if (keccak256(bytes(borrowers[i].id())) == keccak256(bytes(id)))
+            if (borrowers[i].id() == id)
                 if (borrowers[i].valid()) return borrowers[i].getBorrowerInfo();
                 else break;
         }
+        address addr = 0x0000000000000000000000000000000000000000;
         uint256[] memory arr;
         return (
+            addr,
             "NotFound",
             "NotFound",
             type(uint256).max,
@@ -153,26 +158,20 @@ contract LoanSystem {
     // }
 
     function createCashFlow(
-        string memory lenderID,
-        string memory borrowerID,
+        address lenderID,
+        address borrowerID,
         uint256 cashNum
     ) public returns (uint256) {
         //发起一条资金流
         CashFlow cashflow = new CashFlow(cashFlowCount, cashNum);
         cashFlows.push(cashflow);
         for (uint256 i = 0; i < lenders.length; i++) {
-            if (
-                keccak256(bytes(lenders[i].id())) ==
-                keccak256(bytes(lenderID)) &&
-                lenders[i].valid()
-            ) lenders[i].attachCashFlow(cashflow.id());
+            if (lenders[i].id() == lenderID && lenders[i].valid())
+                lenders[i].attachCashFlow(cashflow.id());
         }
         for (uint256 i = 0; i < borrowers.length; i++) {
-            if (
-                keccak256(bytes(borrowers[i].id())) ==
-                keccak256(bytes(borrowerID)) &&
-                borrowers[i].valid()
-            ) borrowers[i].attachCashFlow(cashFlowCount);
+            if (borrowers[i].id() == borrowerID && borrowers[i].valid())
+                borrowers[i].attachCashFlow(cashFlowCount);
         }
         emit CreateCashFlow(lenderID, borrowerID, cashNum);
         cashFlowCount++;
@@ -181,8 +180,8 @@ contract LoanSystem {
 
     function createTransaction(
         uint256 cashFlowID,
-        string memory senderID,
-        string memory receiverID,
+        address senderID,
+        address receiverID,
         uint256 cashNum,
         string memory note
     ) public returns (uint256) {
@@ -225,8 +224,8 @@ contract LoanSystem {
         view
         returns (
             uint256,
-            string memory,
-            string memory,
+            address,
+            address,
             uint256,
             uint256,
             uint256,
@@ -242,10 +241,10 @@ contract LoanSystem {
     function generateID(uint8 t) internal returns (string memory) {
         //产生一个用户id 作为主键
         IDarr[t]++;
-        return SysFunc.GenerateID(t,IDarr[t]);
+        return SysFunc.GenerateID(t, IDarr[t]);
     }
-    
-/*
+
+    /*
     function strConcat(string memory _a, string memory _b)
         internal
         pure

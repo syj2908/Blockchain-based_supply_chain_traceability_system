@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 contract Manager {
-    address id;
+    address public id;
     string passwd;
     bool public valid = true;
 

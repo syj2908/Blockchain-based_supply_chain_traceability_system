@@ -3,11 +3,11 @@ pragma solidity ^0.8.7;
 
 contract Lender {
     //放贷者结构体
-    address id;
+    address public id;
     string account;
     string passwd;
     string name;
-    bool public valid=true;
+    bool public valid = true;
     uint256[] cashFlows;
 
     constructor(
@@ -22,10 +22,10 @@ contract Lender {
         name = _name;
     }
 
-   function attachCashFlow(uint256 cashFlowID) public returns (bool) { 
+    function attachCashFlow(uint256 cashFlowID) public returns (bool) {
         cashFlows.push(cashFlowID);
         return true;
-    }    
+    }
 
     function LenderLogin(string memory _passwd) public view returns (bool) {
         if (keccak256(bytes(passwd)) == keccak256(bytes(_passwd))) return true;
@@ -33,7 +33,9 @@ contract Lender {
     }
 
     function getLenderInfo()
-        public view returns (
+        public
+        view
+        returns (
             address,
             string memory,
             string memory,
@@ -43,7 +45,7 @@ contract Lender {
         return (id, account, name, cashFlows);
     }
 
-    function LoanResponse(address id, uint256 value) public payable{
+    function LoanResponse(address id, uint256 value) public payable {
         // if(check一下reputation)??
         payable(address(id)).transfer(value);
     }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 contract Borrower {
-    address id;
+    address public id;
     string account;
     string passwd;
     string name;
@@ -18,7 +18,7 @@ contract Borrower {
         string memory _name
     ) public {
         id = _id;
-        account=_account;
+        account = _account;
         passwd = _passwd;
         name = _name;
     }
@@ -34,13 +34,18 @@ contract Borrower {
     }
 
     function getBorrowerInfo()
-        public view returns (
-           address, string memory,
+        public
+        view
+        returns (
+            address,
+            string memory,
             string memory,
             uint256,
             uint256,
-            uint256[] memory){
-        return (id,account, name, balance, reputation, cashFlows);
+            uint256[] memory
+        )
+    {
+        return (id, account, name, balance, reputation, cashFlows);
     }
 
     function LoanApply(address id, uint256 value) public {
