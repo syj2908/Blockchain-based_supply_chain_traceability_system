@@ -1,6 +1,3 @@
-// SPDX-License-Identifier: SimPL-2.0
-pragma solidity ^0.8.7;
-
 contract Lender {
     //放贷者结构体
     address public id;

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: SimPL-2.0
 pragma solidity ^0.8.7;
 
 import "./Lender.sol";
@@ -37,70 +38,38 @@ contract LoanSystem {
         string memory account,
         string memory passwd,
         string memory name
-    ) public returns (address) {
-        //创建一个放贷者并返回用户ID
-        address id = msg.sender;
-        Lender lender = new Lender(id, account, passwd, name);
-        lenders.push(lender);
-        emit CreateLender(id, account, name);
-        return id;
+    ) public {
+        //创建一个放贷者
+        require(SysFunc.createLender(lenders, account, passwd, name));
     }
 
     function createBorrower(
         string memory account,
         string memory passwd,
         string memory name
-    ) public returns (address) {
-        //创建一个借贷者并返回用户ID
-        address id = msg.sender;
-        Borrower borrower = new Borrower(id, account, passwd, name);
-        borrowers.push(borrower);
-        emit CreateBorrower(id, account, name);
-        return id;
+    ) public {
+        //创建一个借贷者
+        require(SysFunc.createBorrower(borrowers, account, passwd, name));
     }
 
-    function createManager(string memory passwd) public returns (address) {
-        address id = msg.sender;
-        Manager manager = new Manager(id, passwd);
-        managers.push(manager);
-        emit CreateManager(id);
-        return id;
+    function createManager(string memory passwd) public {
+        //创建一个管理员
+        require(SysFunc.createManager(managers, passwd));
     }
 
-    function deleteLender() public returns (bool) {
+    function deleteLender() public {
         //删除指定放贷者
-        address id = msg.sender;
-        for (uint256 i = 0; i < lenders.length; i++) {
-            if (lenders[i].id() == id) {
-                bool result = lenders[i].deleteLender();
-                emit DeleteLender(id, result);
-                return result;
-            }
-        }
+        require(SysFunc.deleteLender(lenders));
     }
 
-    function deleteBorrower() public returns (bool) {
+    function deleteBorrower() public {
         //删除指定借贷者
-        address id = msg.sender;
-        for (uint256 i = 0; i < borrowers.length; i++) {
-            if (borrowers[i].id() == id) {
-                bool result = borrowers[i].deleteBorrower();
-                emit DeleteBorrower(id, result);
-                return result;
-            }
-        }
+        require(SysFunc.deleteBorrower(borrowers));
     }
 
-    function deleteManager() public returns (bool) {
+    function deleteManager() public {
         //删除指定管理员
-        address id = msg.sender;
-        for (uint256 i = 0; i < lenders.length; i++) {
-            if (managers[i].id() == id) {
-                bool result = managers[i].deleteManager();
-                emit DeleteManager(id, result);
-                return result;
-            }
-        }
+        require(SysFunc.deleteManager(managers));
     }
 
     function getLenderInfo()
@@ -114,15 +83,7 @@ contract LoanSystem {
         )
     {
         //返回放贷者信息(除密码)
-        address id = msg.sender;
-        for (uint256 i = 0; i < lenders.length; i++) {
-            if (lenders[i].id() == id)
-                if (lenders[i].valid()) return lenders[i].getLenderInfo();
-                else break;
-        }
-        address addr = 0x0000000000000000000000000000000000000000;
-        uint256[] memory arr;
-        return (addr, "NotFound", "NotFound", arr);
+        return SysFunc.getLenderInfo(lenders);
     }
 
     function getBorrowerInfo()
@@ -138,28 +99,8 @@ contract LoanSystem {
         )
     {
         //返回借贷者信息(除密码)
-        address id = msg.sender;
-        for (uint256 i = 0; i < borrowers.length; i++) {
-            if (borrowers[i].id() == id)
-                if (borrowers[i].valid()) return borrowers[i].getBorrowerInfo();
-                else break;
-        }
-        address addr = 0x0000000000000000000000000000000000000000;
-        uint256[] memory arr;
-        return (
-            addr,
-            "NotFound",
-            "NotFound",
-            type(uint256).max,
-            type(uint256).max,
-            arr
-        );
+        return SysFunc.getBorrowerInfo(borrowers);
     }
-
-    // function getAllLenderInfo() public view returns (Lender[] memory) {
-    //     //返回所有放贷者信息
-    //     //功能未实现 待补充
-    // }
 
     function createCashFlow(address borrowerID, uint256 cashNum)
         public

@@ -1,22 +1,149 @@
 // SPDX-License-Identifier: SimPL-2.0
 pragma solidity ^0.8.7;
 
-library SysFunc {
-    //业务无关的函数包
+import "./Lender.sol";
+import "./Borrower.sol";
+import "./Manager.sol";
+import "./CashFlow.sol";
+import "./Transaction.sol";
 
-    function strConcat(string memory _a, string memory _b)
-        public
-        pure
-        returns (string memory)
-    {
-        //字符串拼接
-        bytes memory _ba = bytes(_a);
-        bytes memory _bb = bytes(_b);
-        string memory ret = new string(_ba.length + _bb.length);
-        bytes memory bret = bytes(ret);
-        uint256 k = 0;
-        for (uint256 i = 0; i < _ba.length; i++) bret[k++] = _ba[i];
-        for (uint256 i = 0; i < _bb.length; i++) bret[k++] = _bb[i];
-        return string(ret);
+library SysFunc {
+    event CreateLender(address id, string account, string name);
+    event CreateBorrower(address id, string account, string name);
+    event CreateManager(address id);
+    event DeleteLender(address id, bool result);
+    event DeleteBorrower(address id, bool result);
+    event DeleteManager(address id, bool result);
+    event CreateCashFlow(address from, address to, uint256 amount);
+    event CreateTransaction(
+        address from,
+        address to,
+        uint256 cashFlowID,
+        uint256 amount
+    );
+
+    function createLender(
+        Lender[] storage lenders,
+        string memory account,
+        string memory passwd,
+        string memory name
+    ) public returns (bool) {
+        address id = msg.sender;
+        Lender lender = new Lender(id, account, passwd, name);
+        lenders.push(lender);
+        emit CreateLender(id, account, name);
+        return true;
     }
+
+    function createBorrower(
+        Borrower[] storage borrowers,
+        string memory account,
+        string memory passwd,
+        string memory name
+    ) public returns (bool) {
+        address id = msg.sender;
+        Borrower borrower = new Borrower(id, account, passwd, name);
+        borrowers.push(borrower);
+        emit CreateBorrower(id, account, name);
+        return true;
+    }
+
+    function createManager(Manager[] storage managers, string memory passwd)
+        public
+        returns (bool)
+    {
+        address id = msg.sender;
+        Manager manager = new Manager(id, passwd);
+        managers.push(manager);
+        emit CreateManager(id);
+        return true;
+    }
+
+    function deleteLender(Lender[] storage lenders) public returns (bool) {
+        address id = msg.sender;
+        for (uint256 i = 0; i < lenders.length; i++) {
+            if (lenders[i].id() == id) {
+                bool result = lenders[i].deleteLender();
+                emit DeleteLender(id, result);
+                return result;
+            }
+        }
+    }
+
+    function deleteBorrower(Borrower[] storage borrowers)
+        public
+        returns (bool)
+    {
+        address id = msg.sender;
+        for (uint256 i = 0; i < borrowers.length; i++) {
+            if (borrowers[i].id() == id) {
+                bool result = borrowers[i].deleteBorrower();
+                emit DeleteBorrower(id, result);
+                return result;
+            }
+        }
+    }
+
+    function deleteManager(Manager[] storage managers) public returns (bool) {
+        address id = msg.sender;
+        for (uint256 i = 0; i < managers.length; i++) {
+            if (managers[i].id() == id) {
+                bool result = managers[i].deleteManager();
+                emit DeleteManager(id, result);
+                return result;
+            }
+        }
+    }
+
+    function getLenderInfo(Lender[] storage lenders)
+        public
+        view
+        returns (
+            address,
+            string memory,
+            string memory,
+            uint256[] memory
+        )
+    {
+        address id = msg.sender;
+        for (uint256 i = 0; i < lenders.length; i++) {
+            if (lenders[i].id() == id)
+                if (lenders[i].valid()) return lenders[i].getLenderInfo();
+                else break;
+        }
+        address addr = 0x0000000000000000000000000000000000000000;
+        uint256[] memory arr;
+        return (addr, "NotFound", "NotFound", arr);
+    }
+
+    function getBorrowerInfo(Borrower[] storage borrowers)
+        public
+        view
+        returns (
+            address,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            uint256[] memory
+        )
+    {
+        address id = msg.sender;
+        for (uint256 i = 0; i < borrowers.length; i++) {
+            if (borrowers[i].id() == id)
+                if (borrowers[i].valid()) return borrowers[i].getBorrowerInfo();
+                else break;
+        }
+        address addr = 0x0000000000000000000000000000000000000000;
+        uint256[] memory arr;
+        return (
+            addr,
+            "NotFound",
+            "NotFound",
+            type(uint256).max,
+            type(uint256).max,
+            arr
+        );
+    }
+
 }
