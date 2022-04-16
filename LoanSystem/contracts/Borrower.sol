@@ -1,8 +1,5 @@
-// SPDX-License-Identifier: SimPL-2.0
-pragma solidity ^0.8.7;
-
 contract Borrower {
-    string public id;
+    address public id;
     string account;
     string passwd;
     string name;
@@ -12,13 +9,13 @@ contract Borrower {
     uint256[] cashFlows;
 
     constructor(
-        string memory _id,
+        address _id,
         string memory _account,
         string memory _passwd,
         string memory _name
     ) public {
         id = _id;
-        account=_account;
+        account = _account;
         passwd = _passwd;
         name = _name;
     }
@@ -37,6 +34,7 @@ contract Borrower {
         public
         view
         returns (
+            address,
             string memory,
             string memory,
             uint256,
@@ -44,12 +42,12 @@ contract Borrower {
             uint256[] memory
         )
     {
-        return (account, name, balance, reputation, cashFlows);
+        return (id, account, name, balance, reputation, cashFlows);
     }
 
-    function LoanApply(string memory id, uint256 Amount) public {
+    function LoanApply(address id, uint256 value) public {
         // if(check一下reputation)??
-        balance += Amount;
+        balance += value;
     }
 
     function deleteBorrower() public returns (bool) {

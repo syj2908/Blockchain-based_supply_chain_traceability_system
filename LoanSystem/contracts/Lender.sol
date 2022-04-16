@@ -1,17 +1,14 @@
-// SPDX-License-Identifier: SimPL-2.0
-pragma solidity ^0.8.7;
-
 contract Lender {
     //放贷者结构体
-    string public id;
+    address public id;
     string account;
     string passwd;
     string name;
-    bool public valid=true;
+    bool public valid = true;
     uint256[] cashFlows;
 
     constructor(
-        string memory _id,
+        address _id,
         string memory _account,
         string memory _passwd,
         string memory _name
@@ -36,13 +33,18 @@ contract Lender {
         public
         view
         returns (
-            string memory,
+            address,
             string memory,
             string memory,
             uint256[] memory
         )
     {
         return (id, account, name, cashFlows);
+    }
+
+    function LoanResponse(address id, uint256 value) public payable {
+        // if(check一下reputation)??
+        payable(address(id)).transfer(value);
     }
 
     function deleteLender() public returns (bool) {

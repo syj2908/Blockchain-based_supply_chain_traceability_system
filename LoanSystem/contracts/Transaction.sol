@@ -2,8 +2,8 @@ contract Transaction {
     //交易数据结构
     uint256 public id;
     uint256 cashFlowID;
-    string senderID;
-    string receiverID;
+    address senderID;
+    address receiverID;
     uint256 beforeTrans;
     uint256 afterTrans;
     uint256 cashNum;
@@ -13,8 +13,8 @@ contract Transaction {
     constructor(
         uint256 _id,
         uint256 _cashFlowID,
-        string memory _senderID,
-        string memory _receiverID,
+        address _senderID,
+        address _receiverID,
         uint256 _beforeTrans,
         uint256 _afterTrans,
         uint256 _cashNum,
@@ -36,8 +36,8 @@ contract Transaction {
         view
         returns (
             uint256,
-            string memory,
-            string memory,
+            address,
+            address,
             uint256,
             uint256,
             uint256,
