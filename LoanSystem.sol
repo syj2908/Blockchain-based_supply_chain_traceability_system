@@ -203,4 +203,30 @@ contract LoanSystem {
         //查看交易的详细信息
         return transactions[transactionID].checkTransaction();
     }
+
+    function checkItemFlow(uint256 itemID)
+        public
+        view
+        returns (
+            string memory,
+            address,
+            string memory,
+            uint256[] memory
+        )
+    {
+        return itemflows[itemID].checkItemFlow();
+    }
+
+    function checkProcedure(uint256 procedureID)
+        public
+        view
+        returns (
+            uint256,
+            address,
+            string memory,
+            uint256
+        )
+    {
+        return procedures[procedureID].checkProcedure();
+    }
 }
