@@ -6,6 +6,8 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
+import "./ItemFlow.sol";
+import "./Procedure.sol";
 import "./SysFunc.sol";
 
 contract LoanSystem {
@@ -24,9 +26,13 @@ contract LoanSystem {
     Manager[] managers;
     CashFlow[] cashFlows;
     Transaction[] transactions;
+    ItemFlow[] itemflows;
+    Procedure[] procedures;
 
     uint256 cashFlowCount = 0; //资金流ID计数器
     uint256 TransactionCount = 0; //交易ID计数器
+    uint256 itemFlowCount = 0; //物品流ID计数器
+    uint256 procedureCount = 0; //过程ID计数器
 
     function createLender(
         string memory account,
@@ -141,6 +147,30 @@ contract LoanSystem {
             emit CreateTransaction(msg.sender, receiverID, cashFlowID, cashNum);
             return transaction.id();
         } else return type(uint256).max;
+    }
+
+    function createItemFlow(string memory name, string memory note)
+        public
+        returns (uint256)
+    {
+        //物品上链
+        require(SysFunc.createItemFlow(name, note, itemFlowCount, itemflows));
+        itemFlowCount++;
+        return itemFlowCount - 1;
+    }
+
+    function createProcedure(uint256 itemID, string memory operation) public {
+        //物品流变动
+        require(
+            SysFunc.createProcedure(
+                itemID,
+                operation,
+                procedureCount,
+                procedures
+            )
+        );
+        itemflows[itemID].attachProcedure(procedureCount);
+        procedureCount++;
     }
 
     function checkCashFlow(uint256 cashflowID)
