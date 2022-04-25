@@ -6,6 +6,8 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
+import "./ItemFlow.sol";
+import "./Procedure.sol";
 
 library SysFunc {
     event CreateLender(address id, string account, string name);
@@ -21,6 +23,8 @@ library SysFunc {
         uint256 cashFlowID,
         uint256 amount
     );
+    event CreateItemFlow(address master, string name);
+    event CreateProcedure(uint256 itemID, address master, string operation);
 
     function createLender(
         Lender[] storage lenders,
@@ -146,4 +150,33 @@ library SysFunc {
         );
     }
 
+    function createItemFlow(
+        string memory name,
+        string memory note,
+        uint256 itemFlowCount,
+        ItemFlow[] storage itemflows
+    ) public returns (bool) {
+        ItemFlow itemflow = new ItemFlow(itemFlowCount, name, msg.sender, note);
+        itemflows.push(itemflow);
+        emit CreateItemFlow(msg.sender, name);
+        return true;
+    }
+
+    function createProcedure(
+        uint256 itemID,
+        string memory operation,
+        uint256 procedureCount,
+        Procedure[] storage procedures
+    ) public returns (bool) {
+        //物品流变动
+        Procedure procedure = new Procedure(
+            procedureCount,
+            itemID,
+            msg.sender,
+            operation
+        );
+        procedures.push(procedure);
+        emit CreateProcedure(itemID, msg.sender, operation);
+        return true;
+    }
 }

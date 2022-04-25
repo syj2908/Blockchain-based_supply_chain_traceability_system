@@ -6,6 +6,8 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
+import "./ItemFlow.sol";
+import "./Procedure.sol";
 import "./SysFunc.sol";
 
 contract LoanSystem {
@@ -24,9 +26,13 @@ contract LoanSystem {
     Manager[] managers;
     CashFlow[] cashFlows;
     Transaction[] transactions;
+    ItemFlow[] itemflows;
+    Procedure[] procedures;
 
     uint256 cashFlowCount = 0; //资金流ID计数器
     uint256 TransactionCount = 0; //交易ID计数器
+    uint256 itemFlowCount = 0; //物品流ID计数器
+    uint256 procedureCount = 0; //过程ID计数器
 
     function createLender(
         string memory account,
@@ -143,6 +149,30 @@ contract LoanSystem {
         } else return type(uint256).max;
     }
 
+    function createItemFlow(string memory name, string memory note)
+        public
+        returns (uint256)
+    {
+        //物品上链
+        require(SysFunc.createItemFlow(name, note, itemFlowCount, itemflows));
+        itemFlowCount++;
+        return itemFlowCount - 1;
+    }
+
+    function createProcedure(uint256 itemID, string memory operation) public {
+        //物品流变动
+        require(
+            SysFunc.createProcedure(
+                itemID,
+                operation,
+                procedureCount,
+                procedures
+            )
+        );
+        itemflows[itemID].attachProcedure(procedureCount);
+        procedureCount++;
+    }
+
     function checkCashFlow(uint256 cashflowID)
         public
         view
@@ -172,5 +202,31 @@ contract LoanSystem {
     {
         //查看交易的详细信息
         return transactions[transactionID].checkTransaction();
+    }
+
+    function checkItemFlow(uint256 itemID)
+        public
+        view
+        returns (
+            string memory,
+            address,
+            string memory,
+            uint256[] memory
+        )
+    {
+        return itemflows[itemID].checkItemFlow();
+    }
+
+    function checkProcedure(uint256 procedureID)
+        public
+        view
+        returns (
+            uint256,
+            address,
+            string memory,
+            uint256
+        )
+    {
+        return procedures[procedureID].checkProcedure();
     }
 }
