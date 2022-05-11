@@ -3,8 +3,6 @@ contract Borrower {
     string account;
     string passwd;
     string name;
-    uint256 balance;
-    uint256 reputation = 100;
     bool public valid = true;
     uint256[] cashFlows;
 
@@ -32,12 +30,10 @@ contract Borrower {
             address,
             string memory,
             string memory,
-            uint256,
-            uint256,
             uint256[] memory
         )
     {
-        return (id, account, name, balance, reputation, cashFlows);
+        return (id, account, name, cashFlows);
     }
 
     function deleteBorrower() public returns (bool) {

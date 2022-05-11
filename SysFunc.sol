@@ -132,8 +132,6 @@ library SysFunc {
             address,
             string memory,
             string memory,
-            uint256,
-            uint256,
             uint256[] memory
         )
     {
@@ -145,14 +143,7 @@ library SysFunc {
         }
         address addr = 0x0000000000000000000000000000000000000000;
         uint256[] memory arr;
-        return (
-            addr,
-            "NotFound",
-            "NotFound",
-            type(uint256).max,
-            type(uint256).max,
-            arr
-        );
+        return (addr, "NotFound", "NotFound", arr);
     }
 
     function createPartsFlow(

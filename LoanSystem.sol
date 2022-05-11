@@ -93,8 +93,6 @@ contract LoanSystem {
             address,
             string memory,
             string memory,
-            uint256,
-            uint256,
             uint256[] memory
         )
     {
@@ -153,7 +151,8 @@ contract LoanSystem {
         string memory name,
         string memory partsType,
         string memory batch,
-        string memory note
+        string memory note,
+        uint256[] memory formerType
     ) public returns (uint256) {
         //物品上链
         require(
@@ -162,6 +161,7 @@ contract LoanSystem {
                 partsType,
                 batch,
                 note,
+                formerType,
                 partsFlowCount,
                 partsflows
             )
