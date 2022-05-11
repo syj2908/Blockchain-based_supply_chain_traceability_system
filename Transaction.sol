@@ -1,14 +1,14 @@
 contract Transaction {
     //交易数据结构
-    uint256 public id;
-    uint256 cashFlowID;
-    address senderID;
-    address receiverID;
-    uint256 beforeTrans;
-    uint256 afterTrans;
-    uint256 cashNum;
-    string note;
-    uint256 timestamp;
+    uint256 public id; //交易ID
+    uint256 cashFlowID; //关联资金流ID
+    address senderID; //交易发起者ID
+    address receiverID; //交易接收者ID
+    uint256 beforeTrans; //交易前资金金额
+    uint256 afterTrans; //交易后资金金额
+    uint256 cashNum; //交易金额
+    string note; //备注
+    uint256 timestamp; //时间戳
 
     constructor(
         uint256 _id,

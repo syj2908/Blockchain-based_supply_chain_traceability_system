@@ -1,20 +1,28 @@
+enum ProcedureType {
+    technical,
+    assemble
+}
+
 contract Procedure {
-    //物流数据结构
-    uint256 public id;
-    uint256 itemID;
-    address master;
-    string operation;
-    uint256 timestamp;
+    //加工过程数据结构
+    uint256 public id; //加工过程ID
+    uint256 partsID; //被加工零部件ID
+    address processorID; //加工商ID
+    ProcedureType procedureType; //加工类型
+    string operation; //加工操作描述
+    uint256 timestamp; //时间戳
 
     constructor(
         uint256 _id,
-        uint256 _itemID,
-        address _master,
+        uint256 _partsID,
+        address _processorID,
+        ProcedureType _procedureType,
         string memory _operation
     ) {
         id = _id;
-        itemID = _itemID;
-        master = _master;
+        partsID = _partsID;
+        processorID = _processorID;
+        procedureType = _procedureType;
         operation = _operation;
         timestamp = block.timestamp;
     }
@@ -25,10 +33,11 @@ contract Procedure {
         returns (
             uint256,
             address,
+            ProcedureType,
             string memory,
             uint256
         )
     {
-        return (itemID, master, operation, timestamp);
+        return (partsID, processorID, procedureType, operation, timestamp);
     }
 }

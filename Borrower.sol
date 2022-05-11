@@ -25,11 +25,6 @@ contract Borrower {
         return true;
     }
 
-    function BorrowerLogin(string memory _passwd) public view returns (bool) {
-        if (keccak256(bytes(passwd)) == keccak256(bytes(_passwd))) return true;
-        else return false;
-    }
-
     function getBorrowerInfo()
         public
         view
@@ -43,11 +38,6 @@ contract Borrower {
         )
     {
         return (id, account, name, balance, reputation, cashFlows);
-    }
-
-    function LoanApply(address id, uint256 value) public {
-        // if(check一下reputation)??
-        balance += value;
     }
 
     function deleteBorrower() public returns (bool) {

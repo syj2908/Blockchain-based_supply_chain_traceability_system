@@ -6,7 +6,7 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
-import "./ItemFlow.sol";
+import "./PartsFlow.sol";
 import "./Procedure.sol";
 import "./SysFunc.sol";
 
@@ -26,12 +26,12 @@ contract LoanSystem {
     Manager[] managers;
     CashFlow[] cashFlows;
     Transaction[] transactions;
-    ItemFlow[] itemflows;
+    PartsFlow[] partsflows;
     Procedure[] procedures;
 
     uint256 cashFlowCount = 0; //资金流ID计数器
     uint256 TransactionCount = 0; //交易ID计数器
-    uint256 itemFlowCount = 0; //物品流ID计数器
+    uint256 partsFlowCount = 0; //物品流ID计数器
     uint256 procedureCount = 0; //过程ID计数器
 
     function createLender(
@@ -149,27 +149,43 @@ contract LoanSystem {
         } else return type(uint256).max;
     }
 
-    function createItemFlow(string memory name, string memory note)
-        public
-        returns (uint256)
-    {
+    function createPartsFlow(
+        string memory name,
+        string memory partsType,
+        string memory batch,
+        string memory note
+    ) public returns (uint256) {
         //物品上链
-        require(SysFunc.createItemFlow(name, note, itemFlowCount, itemflows));
-        itemFlowCount++;
-        return itemFlowCount - 1;
+        require(
+            SysFunc.createPartsFlow(
+                name,
+                partsType,
+                batch,
+                note,
+                partsFlowCount,
+                partsflows
+            )
+        );
+        partsFlowCount++;
+        return partsFlowCount - 1;
     }
 
-    function createProcedure(uint256 itemID, string memory operation) public {
+    function createProcedure(
+        uint256 partsID,
+        ProcedureType procedureType,
+        string memory operation
+    ) public {
         //物品流变动
         require(
             SysFunc.createProcedure(
-                itemID,
+                partsID,
+                procedureType,
                 operation,
                 procedureCount,
                 procedures
             )
         );
-        itemflows[itemID].attachProcedure(procedureCount);
+        partsflows[partsID].attachProcedure(procedureCount);
         procedureCount++;
     }
 
@@ -204,17 +220,20 @@ contract LoanSystem {
         return transactions[transactionID].checkTransaction();
     }
 
-    function checkItemFlow(uint256 itemID)
+    function checkPartsFlow(uint256 partsID)
         public
         view
         returns (
-            string memory,
             address,
             string memory,
+            string memory,
+            string memory,
+            string memory,
+            uint256[] memory,
             uint256[] memory
         )
     {
-        return itemflows[itemID].checkItemFlow();
+        return partsflows[partsID].checkPartsFlow();
     }
 
     function checkProcedure(uint256 procedureID)
@@ -223,6 +242,7 @@ contract LoanSystem {
         returns (
             uint256,
             address,
+            ProcedureType,
             string memory,
             uint256
         )

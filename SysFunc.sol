@@ -6,7 +6,7 @@ import "./Borrower.sol";
 import "./Manager.sol";
 import "./CashFlow.sol";
 import "./Transaction.sol";
-import "./ItemFlow.sol";
+import "./PartsFlow.sol";
 import "./Procedure.sol";
 
 library SysFunc {
@@ -23,8 +23,13 @@ library SysFunc {
         uint256 cashFlowID,
         uint256 amount
     );
-    event CreateItemFlow(address master, string name);
-    event CreateProcedure(uint256 itemID, address master, string operation);
+    event CreatePartsFlow(address master, string name);
+    event CreateProcedure(
+        uint256 partsID,
+        address master,
+        ProcedureType procedureType,
+        string operation
+    );
 
     function createLender(
         Lender[] storage lenders,
@@ -150,33 +155,46 @@ library SysFunc {
         );
     }
 
-    function createItemFlow(
+    function createPartsFlow(
         string memory name,
+        string memory partsType,
+        string memory batch,
         string memory note,
-        uint256 itemFlowCount,
-        ItemFlow[] storage itemflows
+        uint256[] memory formerparts,
+        uint256 partsFlowCount,
+        PartsFlow[] storage partsflows
     ) public returns (bool) {
-        ItemFlow itemflow = new ItemFlow(itemFlowCount, name, msg.sender, note);
-        itemflows.push(itemflow);
-        emit CreateItemFlow(msg.sender, name);
+        PartsFlow partsflow = new PartsFlow(
+            partsFlowCount,
+            msg.sender,
+            name,
+            partsType,
+            batch,
+            formerparts,
+            note
+        );
+        partsflows.push(partsflow);
+        emit CreatePartsFlow(msg.sender, name);
         return true;
     }
 
     function createProcedure(
-        uint256 itemID,
+        uint256 partsID,
+        ProcedureType procedureType,
         string memory operation,
         uint256 procedureCount,
         Procedure[] storage procedures
     ) public returns (bool) {
-        //物品流变动
+        //零部件加工
         Procedure procedure = new Procedure(
             procedureCount,
-            itemID,
+            partsID,
             msg.sender,
+            procedureType,
             operation
         );
         procedures.push(procedure);
-        emit CreateProcedure(itemID, msg.sender, operation);
+        emit CreateProcedure(partsID, msg.sender, procedureType, operation);
         return true;
     }
 }

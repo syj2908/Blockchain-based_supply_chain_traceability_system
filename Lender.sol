@@ -24,11 +24,6 @@ contract Lender {
         return true;
     }
 
-    function LenderLogin(string memory _passwd) public view returns (bool) {
-        if (keccak256(bytes(passwd)) == keccak256(bytes(_passwd))) return true;
-        else return false;
-    }
-
     function getLenderInfo()
         public
         view
@@ -40,11 +35,6 @@ contract Lender {
         )
     {
         return (id, account, name, cashFlows);
-    }
-
-    function LoanResponse(address id, uint256 value) public payable {
-        // if(check一下reputation)??
-        payable(address(id)).transfer(value);
     }
 
     function deleteLender() public returns (bool) {

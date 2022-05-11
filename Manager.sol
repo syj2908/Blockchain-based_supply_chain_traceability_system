@@ -14,11 +14,6 @@ contract Manager {
         else return false;
     }
 
-    function ManagerLogin(string memory _passwd) public view returns (bool) {
-        if (keccak256(bytes(_passwd)) == keccak256(bytes(passwd))) return true;
-        else return false;
-    }
-
     //     function deleteLender(address id) public returns (bool) {
     //     //删除指定放贷者
     //     for (uint256 i = 0; i < lenders.length; i++) {
